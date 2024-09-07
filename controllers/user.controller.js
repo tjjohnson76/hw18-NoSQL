@@ -6,7 +6,7 @@ const resource = 'user';
 
 async function getAll(){
   try {
-    const response = await Model.find({})
+    const response = (await Model.find({})).populate("friends")
     return response
   } catch(err){
     console.log(`Error in GET request for ${resource}:`, err.message)
@@ -17,7 +17,7 @@ async function getAll(){
 
 async function getById(id){
   try {
-    const response = await Model.findById(id)
+    const response = await Model.findById(id).populate("friends")
     return response
   } catch(err){
     console.log(`Error in GET (by id) request for ${resource}:`, err.message)
@@ -63,10 +63,43 @@ async function deleteById(id){
 }
 
 
+async function createFriend(userId, friendId){
+  try {
+    const response = await Model.findByIdAndUpdate(
+      {_id: userId}, 
+      { $addToSet: { friends: friendId }},
+      { new: true }
+    )
+    return response
+  } catch(err){
+    console.log(`Error in createFriend:`, err.message)
+    throw new Error(err)
+  }
+}
+
+
+
+async function deleteFriend(userId, friendId){
+  try {
+    const response = await Model.findByIdAndUpdate(
+      {_id: userId}, 
+      { $pull: { friends: friendId }},
+      { new: true }
+    )
+    return response
+  } catch(err){
+    console.log(`Error in createFriend:`, err.message)
+    throw new Error(err)
+  }
+}
+
+
 module.exports = {
   getAll,
   getById,
   create,
   updateById,
-  deleteById
+  deleteById,
+  createFriend,
+  deleteFriend
 };
