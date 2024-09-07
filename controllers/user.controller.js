@@ -1,4 +1,4 @@
-const User = require("../models/index")
+const {User} = require("../models/index")
 
 const Model = User;
 const resource = 'user';
@@ -6,7 +6,7 @@ const resource = 'user';
 
 async function getAll(){
   try {
-    const response = (await Model.find({})).populate("friends")
+    const response = (await Model.find({}).populate("friends"))
     return response
   } catch(err){
     console.log(`Error in GET request for ${resource}:`, err.message)
@@ -17,7 +17,7 @@ async function getAll(){
 
 async function getById(id){
   try {
-    const response = await Model.findById(id).populate("friends")
+    const response = (await Model.findById(id).populate("friends"))
     return response
   } catch(err){
     console.log(`Error in GET (by id) request for ${resource}:`, err.message)

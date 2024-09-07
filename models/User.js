@@ -4,10 +4,10 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true, trim: true},
   email: { type: String, required: true, unique: true },
   thoughts: [
-    {type: Schema.Types.ObjectId, ref: 'Thought'}
+    {type: mongoose.Schema.Types.ObjectId, ref: 'Thought'}
   ],
   friends: [
-    {type: Schema.Types.ObjectId, ref: 'User'}
+    {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
   ],
   lastAccessed: { type: Date, default: Date.now },
 });

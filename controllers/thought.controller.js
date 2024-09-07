@@ -6,7 +6,7 @@ const resource = 'thought';
 
 async function getAll(){
     try {
-      const response = (await Model.find({})).populate("reactions")
+      const response = (await Model.find({}).populate("reactions"))
       return response
     } catch(err){
       console.log(`Error in GET request for ${resource}:`, err.message)
@@ -29,11 +29,12 @@ async function getAll(){
   async function create(body){
     try {
       const response = await Model.create(body)
-      await User.findOneAndUpdate(
-        { _id: body.userId},
-        { $push: { thoughts: _id}},
+      const userRes = await User.findOneAndUpdate(
+        {_id: body.userId},
+        { $push: { thoughts: response._id}},
         { new: true }
       )
+      console.log(userRes)
       return response
     } catch(err){
       console.log(`Error in POST request for ${resource}:`, err.message)
@@ -70,11 +71,12 @@ async function getAll(){
 
 async function createReaction(thoughtId, body){
     try {
-        await Thought.findByIdAndUpdate(
+        const response = await Thought.findByIdAndUpdate(
             {_id: thoughtId },
             { $addToSet: { reactions: body }},
             { new: true, runValidators: true }
         )
+        return response;
       } catch(err){
         console.log(`Error in createReaction:`, err.message)
         throw new Error(err)
@@ -84,11 +86,12 @@ async function createReaction(thoughtId, body){
 
 async function deleteReaction(thoughtId, reactionId){
     try { 
-        await Thought.findByIdAndUpdate(
+        const response = await Thought.findByIdAndUpdate(
             { _id: thoughtId },
-            { $pull: { reactions: { reactionId: reactionId }}},
+            { $pull: { reactions: { _id: reactionId }}},
             { new: true }
         )
+        return response;
     } catch(err){
         console.log(`Error in deleteReaction:`, err.message)
         throw new Error(err)

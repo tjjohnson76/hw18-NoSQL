@@ -73,3 +73,7 @@ router.get("/", async (req, res) => {
       res.status(500).json({ status: "error", payload: err.message })
     }
   })
+
+
+
+  module.exports = router
