@@ -1,6 +1,7 @@
-const { User, Thought } = require("../models/User")
+const { getAll, getById, create, updateById, deleteById, createReaction, deleteReaction } = require("../../controllers/thought.controller")
 
-const resource = 'thought';
+const router = require("express").Router() 
+
 
 router.get("/", async (req, res) => {
     try {
@@ -45,6 +46,28 @@ router.get("/", async (req, res) => {
   router.delete("/:id", async (req, res) => {
     try {
       const response = await deleteById(req.params.id)
+      res.json({ status: "success", payload: response })
+    } catch(err){
+      res.status(500).json({ status: "error", payload: err.message })
+    }
+  })
+
+
+
+  router.post("/:thoughtId/reactions", async (req, res) => {
+    try {
+      const response = await createReaction(req.params.thoughtId, req.body)
+      res.json({ status: "success", payload: response })
+    } catch(err){
+      res.status(500).json({ status: "error", payload: err.message })
+    }
+  })
+
+
+
+  router.delete("/:thoughtId/reactions/:reactionId", async (req, res) => {
+    try {
+      const response = await deleteReaction(req.params.thoughtId, req.params.reactionId)
       res.json({ status: "success", payload: response })
     } catch(err){
       res.status(500).json({ status: "error", payload: err.message })
